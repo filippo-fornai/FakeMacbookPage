@@ -13,8 +13,18 @@ const fadeMeshes = (group, opacity) => {
   if (!group) return;
   group.traverse((child) => {
     if (child.isMesh) {
-      child.material.transparent = true;
+      // child.material.transparent = true;
       gsap.to(child.material, { opacity, duration: ANIMATION_DURATION });
+    }
+  });
+};
+
+const vanishMeshes = (group) => {
+  if (!group) return;
+  group.traverse((child) => {
+    if (child.isMesh) {
+      child.material.transparent = true;
+      child.material.opacity = 0;
     }
   });
 };
@@ -25,12 +35,17 @@ const moveGroup = (group, x) => {
 };
 
 const ModelSwitcher = ({ scale, isMobile }) => {
-    const SCALE_LARGE_DESKTOP = 0.08;
-    const SCALE_LARGE_MOBILE = 0.08;
+  const SCALE_LARGE_DESKTOP = 0.08;
+  const SCALE_LARGE_MOBILE = 0.05;
 
   const smallMacbookRef = useRef();
   const largeMacbookRef = useRef();
-  const showLargeMacbook = scale === SCALE_LARGE_DESKTOP || scale === SCALE_LARGE_MOBILE;
+  const showLargeMacbook =
+    scale === SCALE_LARGE_DESKTOP || scale === SCALE_LARGE_MOBILE;
+  useGSAP(() => {
+    vanishMeshes(smallMacbookRef.current);
+    vanishMeshes(largeMacbookRef.current);
+  });
 
   useGSAP(() => {
     if (showLargeMacbook) {
